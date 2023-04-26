@@ -81,8 +81,27 @@ def test_re():
     print("compile", result4)
 
 
+def test_span():
+    s = '''
+    <div class='西游记'><span id='10010'>中国联通</span></div>
+    <div class='西游记'><span id='10086'>中国移动</span></div>
+    '''
+    # () 提取()范围内的数据   (?P<>) 结果加入到组
+    obj = re.compile(r"<span id='(?P<id>\d+)'>(?P<name>.*?)</span>")
+    result = obj.findall(s)
+    print(result)
+
+    result2 = obj.finditer(s)
+    for item in result2:
+        id = item.group("id")
+        print(id)
+        name = item.group("name")
+        print(name)
+
+
 if __name__ == '__main__':
     # content = input("请输入一个单词: ")
     # post(content)
     # movie()
-    test_re()
+    # test_re()
+    test_span()
