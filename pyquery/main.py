@@ -83,12 +83,34 @@ def f17k():
     resp = session.get("https://user.17k.com/ck/author/shelf?page=1&appKey=2406394919")
     print(resp.json())
 
+# https://video.pearvideo.com/mp4/short/20170306/cont-1043251-10252590-hd.mp4 真实地址
+# https://pearvideo.com/videoStatus.jsp?contId=1043251&mrd=0.6596387695500097
+def pear_get():
+    url = "https://pearvideo.com/video_1043251"
+    contId = url.split("_")[1]
+    videoStatusUrl = f"https://pearvideo.com/videoStatus.jsp?contId={contId}&mrd=0.6596387695500097"
+    headers = {
+        "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/112.0.0.0 Safari/537.36",
+        # 防盗链 溯源 当前请求的上一级是谁
+        "Referer": "https://pearvideo.com/video_1043251"
+    }
+
+    dic = requests.get(videoStatusUrl, headers=headers).json()
+    srcUrl = dic['videoInfo']['videos']['srcUrl']
+    systemTime = dic['systemTime']
+    srcUrl = srcUrl.replace(systemTime, f"cont-{contId}")
+    with open(f"{contId}.mp4", mode="wb") as f:
+        f.write(requests.get(srcUrl).content)
+
+
+
+
 
 def main():
     # url = "https://k.autohome.com.cn/146/"
     # html = get_page_source(url)
     # parse_page_source(html)
-    f17k()
+    pear_get()
 
 
 if __name__ == '__main__':
